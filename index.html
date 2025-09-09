@@ -92,11 +92,7 @@
   <div class="overlay">
     <h1>🌸Port Code</h1>
     <div class="search-container">
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="Enter a country or region..."
-      />
+      <input type="text" id="searchInput" placeholder="Enter a city name..." />
       <button onclick="searchPorts()">Search</button>
       <div class="result" id="result"></div>
     </div>
@@ -104,13 +100,31 @@
 
   <script>
     const portData = {
-       Tokyo: ["JPTYO"], Yokohama: ["JPYOK"], Nagoya: ["JPNGO"], Osaka: ["JPOSA"], Hakata: ["JPHKT"], Akita: ["AXT"], Chiba: ["JPCHB"],
-              Hachinohe: ["HHE"], Hakata: ["JPHKT"], Hiroshima: ["JPHIJ"], Hitachinaka: ["HIC"], Hokkaido: ["JPHKD"], Hososhima: ["JPHSM"],
-              Imbari: ["JPIMB"], Iwakuni: ["JPIWK"], Iyomishima: ["JPIYM"], Kagoshima: ["JPKOJ"], Kawasaki: ["JPKWS"], Kobe: ["JPUKB"],
-              Kochi: ["JPKCZ"], Kokura: ["JPKOK"], Kushiro: ["JPKUH"], Matsuyama: ["JPMYJ"], Mizushima: ["JPMIZ']
-             
-                                                                                                         
-      
+      Tokyo: ["JPTYO"],
+      Yokohama: ["JPYOK"],
+      Nagoya: ["JPNGO"],
+      Osaka: ["JPOSA"],
+      Hakata: ["JPHKT"],
+      Akita: ["JPAXT"],
+      Chiba: ["JPCHB"],
+      Hachinohe: ["JPHHE"],
+      Hiroshima: ["JPHIJ"],
+      Hitachinaka: ["JPHIC"],
+      Hokkaido: ["JPHKD"],
+      Hososhima: ["JPHSM"],
+      Imbari: ["JPIMB"],
+      Iwakuni: ["JPIWK"],
+      Iyomishima: ["JPIYM"],
+      Kagoshima: ["JPKOJ"],
+      Kawasaki: ["JPKWS"],
+      Kobe: ["JPUKB"],
+      Kochi: ["JPKCZ"],
+      Kokura: ["JPKOK"],
+      Kushiro: ["JPKUH"],
+      Matsuyama: ["JPMYJ"],
+      Mizushima: ["JPMIZ"],
+      Moji: ["JPMOJ"],
+      Naha: ["JPNAH"]
     };
 
     function searchPorts() {
@@ -119,7 +133,7 @@
       resultDiv.innerHTML = "";
 
       if (!input) {
-        resultDiv.innerHTML = '<p style="color: orange;">Please enter a country or region name.</p>';
+        resultDiv.innerHTML = '<p style="color: orange;">Please enter a city name.</p>';
         return;
       }
 
@@ -141,11 +155,10 @@
       }
 
       if (!found) {
-        resultDiv.innerHTML = `<p style="color: red;">No port codes found for "${input}".</p>`;
+        resultDiv.innerHTML = `<p style="color: red;">No port codes found for "<strong>${input}</strong>".</p>`;
       }
     }
 
-    // Allow pressing Enter to trigger search
     document.getElementById("searchInput").addEventListener("keypress", function (e) {
       if (e.key === "Enter") {
         searchPorts();
