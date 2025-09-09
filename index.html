@@ -1,179 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Port Code Finder</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        color: #ffffff;
-        background: url("https://i.imgur.com/MY2aD1w.jpg") no-repeat center
-          center fixed;
-        background-size: cover;
-        backdrop-filter: blur(3px);
-      }
-
-      .overlay {
-        background-color: rgba(0, 0, 0, 0.7);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        padding: 2rem;
-      }
-
-      h1 {
-        font-size: 2.5rem;
-        color: #ff77ff;
-        text-shadow: 0 0 10px #ff77ff, 0 0 20px #ff77ff;
-        margin-bottom: 1rem;
-      }
-
-      .search-container {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-        width: 90%;
-        max-width: 600px;
-        text-align: center;
-      }
-
-      input {
-        padding: 0.7rem;
-        width: 70%;
-        border-radius: 6px;
-        border: none;
-        font-size: 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-      }
-
-      input::placeholder {
-        color: #ccc;
-      }
-
-      button {
-        padding: 0.7rem 1.5rem;
-        background: #ff77ff;
-        color: black;
-        font-weight: bold;
-        border: none;
-        border-radius: 6px;
-        margin-left: 0.5rem;
-        cursor: pointer;
-        transition: background 0.3s;
-      }
-
-      button:hover {
-        background: #ff44ff;
-      }
-
-      .result {
-        margin-top: 1.5rem;
-      }
-
-      .code {
-        display: inline-block;
-        background: #1e1e2f;
-        padding: 0.5rem 1rem;
-        margin: 0.25rem;
-        border-radius: 5px;
-        border: 1px solid #ff77ff;
-        color: #ff77ff;
-        font-weight: bold;
-        font-size: 0.95rem;
-      }
-    </style>
-  </head>
-  <body>
+<html lang="en"> <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <title>Port Code </title> 
+  <style> body { margin: 0; font-family: "Segoe UI", sans-serif; color: #ffffff; background: url("https://i.imgur.com/MY2aD1w.jpg") no-repeat center center fixed; background-size: cover; backdrop-filter: blur(3px); } .overlay { background-color: rgba(0, 0, 0, 0.7); min-height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 2rem; } h1 { font-size: 2.5rem; color: #ff77ff; text-shadow: 0 0 10px #ff77ff, 0 0 20px #ff77ff; margin-bottom: 1rem; } .search-container { background: rgba(255, 255, 255, 0.05); padding: 2rem; border-radius: 12px; box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); width: 90%; max-width: 600px; text-align: center; } input { padding: 0.7rem; width: 70%; border-radius: 6px; border: none; font-size: 1rem; background: rgba(255, 255, 255, 0.1); color: #fff; } input::placeholder { color: #ccc; } button { padding: 0.7rem 1.5rem; background: #ff77ff; color: black; font-weight: bold; border: none; border-radius: 6px; margin-left: 0.5rem; cursor: pointer; transition: background 0.3s; } button:hover { background: #ff44ff; } .result { margin-top: 1.5rem; } .code { display: inline-block; background: #1e1e2f; padding: 0.5rem 1rem; margin: 0.25rem; border-radius: 5px; border: 1px solid #ff77ff; color: #ff77ff; font-weight: bold; font-size: 0.95rem; } </style>
+</head> 
+  <body> 
     <div class="overlay">
-      <h1>🌸Port Code Finder</h1>
-
-      <div class="search-container">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Enter a country or city..."
-        />
-        <button onclick="searchPorts()">Search</button>
-
-        <div class="result" id="result"></div>
-      </div>
-    </div>
-
-    <script>
-      const apiKey = "YOUR_API_KEY_HERE"; // Replace with your Zyla API key
-
-      // Trigger search on Enter key
-      document
-        .getElementById("searchInput")
-        .addEventListener("keypress", function (e) {
-          if (e.key === "Enter") {
-            searchPorts();
-          }
-        });
-
-      async function searchPorts() {
-        const input = document.getElementById("searchInput").value.trim();
-        const resultDiv = document.getElementById("result");
-        resultDiv.innerHTML = "";
-
-        if (!input) {
-          resultDiv.innerHTML =
-            '<p style="color: orange;">Please enter a country or city name.</p>';
-          return;
-        }
-
-        // Try city search first
-        const cityUrl = `https://zylalabs.com/api/1767/seaports+information+api/1400/seaports+information+by+city?city=${encodeURIComponent(
-          input
-        )}`;
-
-        const countryUrl = `https://zylalabs.com/api/1767/seaports+information+api/1401/seaports+information+by+country?country=${encodeURIComponent(
-          input
-        )}`;
-
-        try {
-          let res = await fetch(cityUrl, {
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
-            },
-          });
-
-          let data = await res.json();
-
-          // If city returns no results, try country
-          if (!data || !data.length) {
-            res = await fetch(countryUrl, {
-              headers: {
-                Authorization: `Bearer ${apiKey}`,
-              },
-            });
-            data = await res.json();
-          }
-
-          if (!data || data.length === 0) {
-            resultDiv.innerHTML = `<p style="color: red;">No port codes found for "${input}".</p>`;
-            return;
-          }
-
-          resultDiv.innerHTML = `<p>Port Codes for <strong>${input}</strong>:</p>`;
-          data.forEach((port) => {
-            const span = document.createElement("span");
-            span.className = "code";
-            span.textContent = port.unlocode || port.name;
-            resultDiv.appendChild(span);
-          });
-        } catch (error) {
-          console.error(error);
-          resultDiv.innerHTML =
-            '<p style="color: red;">Something went wrong. Please try again later.</p>';
-        }
-      }
-    </script>
-  </body>
-</html>
+      <h1>🌸Port Code</h1> 
+      <div class="search-container"> 
+        <input type="text" id="searchInput" placeholder="Enter a country or region..." />
+        <button onclick="searchPorts()">Search</button> 
+        <div class="result" id="result"></div> 
+      </div> </div> <script> const portData = { Japan: ["JPTYO", "JPYOK", "JPNGO", "JPOSA", "JPHKT", "JPPUS", "JPMOJ"], China: ["CNYNT", "CNDAL", "CNSHA", "CNWUH", "CNTYU", "CNSZX" ], Korea: ["KRINC", "KRUSN", "KRPUS"], HongKong: ["HKHKG"], Taiwan: ["TWTPE", "TWHUN"], Myanmar: ["MMRGN"], Cambodia: ["KHKOS"], Philippines: ["PHMNL", "PHSBU"], Malaysia: ["MYPKG", "MYKUL"], Indonesia: ["IDJKT", "IDSUB"], Thailand: ["THLCH", "THTHP"], Singapore: ["SGSIN"], Vietnam: ["VNHCH", "VNSGN"], Macau: ["MOMFM"], Bangladesh: ["BDCGP"], "Sri Lanka": ["LKCMB"], Pakistan: ["PKKHI", "PKKPT"], Bahrain: ["BHBHR"], "Saudi Arabia": ["SADMM", "SAJED"], UAE: ["AEDXB", "AEAUH"], " India": ["INDEL", "INLUH"], " India": ["INMUM", "INNSR"], " India": ["INCCU", "INKOL"], " India": ["INMAA", "INTIR"], " India": ["INGRJ", "INDLH"], " India": ["INMBI", "INGOI"], }; 
+        function searchPorts() 
+        { const input = document.getElementById("searchInput").value.trim(); 
+         const resultDiv = document.getElementById("result"); resultDiv.innerHTML = ""; 
+         if (!input) { resultDiv.innerHTML = '<p style="color: orange;">Please enter a country or region name.</p>'; return; 
+                     } const normalized = input.toLowerCase(); 
+         let found = false; 
+         for (let key in portData) { if (key.toLowerCase() === normalized) { resultDiv.innerHTML = <p>Port Codes for <strong>${key}</strong>:</p>; portData[key].forEach((code) => { const span = document.createElement("span"); span.className = "code"; span.textContent = code; resultDiv.appendChild(span); }); found = true; break; } } if (!found) { resultDiv.innerHTML = <p style="color: red;">No port codes found for "${input}".</p>; } } </script> </body>
