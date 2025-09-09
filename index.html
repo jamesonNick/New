@@ -95,10 +95,20 @@
       background-color: #1e1e2f;
       border-radius: 6px;
       margin-top: 5px;
-      z-index: 10;
       max-height: 180px;
       overflow-y: auto;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transform: translateY(5px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .suggestions.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
 
     .suggestion-item {
@@ -126,230 +136,208 @@
   </div>
 
   <script>
-  const portData = {
-    Tokyo: ["JPTYO"],
-    Yokohama: ["JPYOK"],
-    Nagoya: ["JPNGO"],
-    Osaka: ["JPOSA"],
-    Hakata: ["JPHKT"],
-    Akita: ["JPAXT"],
-    Chiba: ["JPCHB"],
-    Hachinohe: ["JPHHE"],
-    Hiroshima: ["JPHIJ"],
-    Hitachinaka: ["JPHIC"],
-    Hokkaido: ["JPHKD"],
-    Hososhima: ["JPHSM"],
-    Imbari: ["JPIMB"],
-    Iwakuni: ["JPIWK"],
-    Iyomishima: ["JPIYM"],
-    Kagoshima: ["JPKOJ"],
-    Kawasaki: ["JPKWS"],
-    Kobe: ["JPUKB"],
-    Kochi: ["JPKCZ"],
-    Kokura: ["JPKOK"],
-    Kushiro: ["JPKUH"],
-    Matsuyama: ["JPMYJ"],
-    Mizushima: ["JPMIZ"],
-    Moji: ["JPMOJ"],
-    Naha: ["JPNAH"],
-    Yokkaichi: ["JPYKK"],
-    Wakayama: ["JPWAK"],
-    Toyoma: ["JPTOY"],
-    ToyomaShinko: ["JPTOS"],
-    Tomakomai: ["JPTMK"],
-    Takamatsu: ["JPTAK"],
-    Shimonoseki: ["JPSHS"],
-    Shimizu: ["JPSMZ"],
-
-    Dalian: ["CNDLC"],
-    Lianyungang: ["CNLYG"],
-    Qingdao: ["CNTAO"],
-    Xingang: ["CNXGG"],
-    Changshu: ["CNCGU"],
-    Chongqing: ["CNCKG"],
-    Nanjing: ["CNNKG"],
-    Nantong: ["CNNTG"],
-    Ningbo: ["CNNGB"],
-    Shanghai: ["CNSHA"],
-    Wuhan: ["CNWUH"],
-    Yangzhou: ["CNYZH"],
-    Zhangjiagang: ["CNZJG"],
-    Yantai: ["CNYNT"],
-    Zhenjiang: ["CNZHE"],
-    Dongguan: ["CNDGG"],
-    Humen: ["CNHMN"],
-    Shatian: ["CNSIN"],
-    Taiping: ["CNTAP"],
-    Fangcheng: ["CNFAN"],
-    Foshan: ["CNFOS"],
-    Sanshan: ["CNSHG"],
-    Fujian: ["CNNND"],
-    Fuzhou: ["CNFOC"],
-    Xiamen: ["CNXMN"],
-    Guangzhou: ["CNCAN"],
-    Huangpu: ["CNHUA"],
-    Lianhuashan: ["CNLIH"],
-    Nansha: ["CNNSA"],
-    Haikou: ["CNHAK"],
-    Huizhou: ["CNHUI"],
-    Jiangmen: ["CNJMN"],
-    Xinhui: ["CNXIN"],
-    Shantou: ["CNSWA"],
-    Shekou: ["CNSHK"],
-    ChiwAn: ["CNCWN"],
-    DachanBay: ["CNDJB"],
-    Yantian: ["CNYTI"],
-    Shunde: ["CNSUD"],
-    Beijiao: ["CNYQS"],
-    Leliu: ["CNLUU"],
-    Rongqi: ["CNROQ"],
-    Zhanjiang: ["CNZHA"],
-    Zhongshan: ["CNZSN"],
-    Xiaolan: ["CNXIL"],
-    Zhuhai: ["CNZUH"],
-    Gaolan: ["CNGON"],
-
-    Pusan: ["KRPUS"],
-    HongKong: ["HKHK", "HKHKG"],
-    Taiwan: ["TWTW"],
-    "Hsin Chu": ["TWHSL"],
-    Kaohsiung: ["TWKHH"],
-    Keelung: ["TWKEL"],
-    Taichung: ["TWTXG"],
-    Taipei: ["TWTPE"],
-    Taoyuan: ["TWTYU"],
-
-    Myanmar: ["MMMM"],
-    Yangon: ["MMRGN"],
-
-    Cambodia: ["KHKH"],
-    PhnomPenh: ["KHPNH"],
-    Sihanoukville: ["KHKOS"],
-
-    Philippines: ["PHPH"],
-    CagayandeOro: ["PHCGY"],
-    Cebu: ["PHCEB"],
-    Davao: ["PHDVO"],
-    GeneralSantos: ["PHGES"],
-    Manila: ["PHMNL"],
-    ManilaNorthPort: ["PHMNLN"],
-    ManilaSouthPort: ["PHMNLS"],
-    Subic: ["PHSFS"],
-
-    Malaysia: ["MYMY"],
-    PasirGudang: ["MYPGU"],
-    JohoreBahru: ["MYJHB"],
-    Penang: ["MYPEN"],
-    PortKlang: ["MYPKG"],
-    KualaLumpur: ["MYKUL"],
-
-    Balikpapan: ["IDBPN"],
-    Banjarmasin: ["IDBDJ"],
-    Batam: ["IDBTM"],
-    Belawan: ["IDBLW"],
-    Jakarta: ["IDJKT"],
-    "Jambi Sumatra": ["IDDJB"],
-    Makassar: ["IDMAK"],
-    Padang: ["IDPDG"],
-    Palembang: ["IDPLM"],
-    Panjang: ["IDPNJ"],
-    Pontianak: ["IDPNK"],
-    Samarinda: ["IDSRI"],
-    Semarang: ["IDSRG"],
-    Surabaya: ["IDSUB"],
-
-    Thailand: ["THTH"],
-    Bangkok: ["THBKK"],
-    LaemChabang: ["THLCH"],
-    LatKrabang: ["THLKR"],
-    Songkhla: ["THSGZ"],
-
-    Singapore: ["SGSIN"],
-
-    Vietnam: ["VNVN"],
-    CaiLan: ["VNCLN"],
-    DaNang: ["VNDAD"],
-    Haiphong: ["VNHPH"],
-    Hanoi: ["VNHAN"],
-    HoChiMinh: ["VNSGN"],
-    CaiMep: ["VNCMP"],
-    Quinhon: ["VNUIH"],
-
-    Macau: ["MOMO", "MOMFM"],
-
-    Chittagong: ["BDCGP"],
-    Dhaka: ["BDDAC"],
-    Mongla: ["BDMGL"],
-
-    Colombo: ["LKCMB"],
-
-    Karachi: ["PKKHI"],
-    Faisalabad: ["PKLYP"],
-    Multan: ["PKMUX"],
-    Peshawar: ["PKPEW"],
-    Sialkot: ["PKSKT"],
-    Lahore: ["PKLHE"],
-    Islamabad: ["PKISB"],
-    MuhammadBinQasim: ["PKBQM"],
-
-    Manama: ["BHAMH"],
-    Bahrain: ["BHBAH"],
-
-    Jeddah: ["SAJED"],
-    Jubayl: ["SAJUB"],
-    Riyadh: ["SARUH"],
-    Dammam: ["SADMM"],
-
-    AbuDhabi: ["AEAUH"],
-    Khorfakkan: ["AEKLF"],
-    UmmAlQuawain: ["AEQIW"],
-    RasAlKhaimah: ["AERKT"],
-    Sharjah: ["AESHJ"],
-    Dubai: ["AEDXB"],
-    PortRashid: ["AEPRA"],
-    Ajman: ["AEAJM"],
-    Fujairah: ["AEFJR"],
-    JebelAli: ["AEJEA"],
-
-    Mundra: ["INMUN"],
-    Pipavav: ["INPAV"],
-    NhavaSheva: ["INNSA"],
-
-    Tughlakabad: ["INTKD"],
-    NewDelhi: ["INICD"],
-    Dadri: ["INDRI"],
-    Faridabad: ["INFBD"],
-    Jaipur: ["INJAI"],
-    Jodhpur: ["INMNV"],
-    Kanpur: ["INKNU"],
-    Moradabad: ["INMOR"],
-    Patparganj: ["INPPG"],
-    Ludhiana: ["INLUH"],
-    Patli: ["INPTL"],
-    Gurgaon: ["INGGN"],
-    Loni: ["INLON"],
-    Kathuwas: ["INCML"],
-    Piyala: ["INPYL"],
-
-    Nagpur: ["INNAG"],
-    Indore: ["INIRE"],
-    Pune: ["INPNQ"],
-    Talegaon: ["INTGD"],
-    Ahmedabad: ["INAMD"],
-    Akleshwar: ["INAKV"],
-    Baroda: ["INBDQ"],
-    Sanand: ["INSAA"],
-
-    Madras: ["INMAA"],
-    Kattupalli: ["INKTP"],
-    Vizag: ["INVTZ"],
-    Tuticorin: ["INTUT"],
-    Calcutta: ["INCCU"],
-    Bangalore: ["INBGL"],
-    Hyderabad: ["INNHY"]
-  };
-
-
+    const portData = {
+      Tokyo: ["JPTYO"],
+      Yokohama: ["JPYOK"],
+      Nagoya: ["JPNGO"],
+      Osaka: ["JPOSA"],
+      Hakata: ["JPHKT"],
+      Akita: ["JPAXT"],
+      Chiba: ["JPCHB"],
+      Hachinohe: ["JPHHE"],
+      Hiroshima: ["JPHIJ"],
+      Hitachinaka: ["JPHIC"],
+      Hokkaido: ["JPHKD"],
+      Hososhima: ["JPHSM"],
+      Imbari: ["JPIMB"],
+      Iwakuni: ["JPIWK"],
+      Iyomishima: ["JPIYM"],
+      Kagoshima: ["JPKOJ"],
+      Kawasaki: ["JPKWS"],
+      Kobe: ["JPUKB"],
+      Kochi: ["JPKCZ"],
+      Kokura: ["JPKOK"],
+      Kushiro: ["JPKUH"],
+      Matsuyama: ["JPMYJ"],
+      Mizushima: ["JPMIZ"],
+      Moji: ["JPMOJ"],
+      Naha: ["JPNAH"],
+      Yokkaichi: ["JPYKK"],
+      Wakayama: ["JPWAK"],
+      Toyoma: ["JPTOY"],
+      ToyomaShinko: ["JPTOS"],
+      Tomakomai: ["JPTMK"],
+      Takamatsu: ["JPTAK"],
+      Shimonoseki: ["JPSHS"],
+      Shimizu: ["JPSMZ"],
+      Dalian: ["CNDLC"],
+      Lianyungang: ["CNLYG"],
+      Qingdao: ["CNTAO"],
+      Xingang: ["CNXGG"],
+      Changshu: ["CNCGU"],
+      Chongqing: ["CNCKG"],
+      Nanjing: ["CNNKG"],
+      Nantong: ["CNNTG"],
+      Ningbo: ["CNNGB"],
+      Shanghai: ["CNSHA"],
+      Wuhan: ["CNWUH"],
+      Yangzhou: ["CNYZH"],
+      Zhangjiagang: ["CNZJG"],
+      Yantai: ["CNYNT"],
+      Zhenjiang: ["CNZHE"],
+      Dongguan: ["CNDGG"],
+      Humen: ["CNHMN"],
+      Shatian: ["CNSIN"],
+      Taiping: ["CNTAP"],
+      Fangcheng: ["CNFAN"],
+      Foshan: ["CNFOS"],
+      Sanshan: ["CNSHG"],
+      Fujian: ["CNNND"],
+      Fuzhou: ["CNFOC"],
+      Xiamen: ["CNXMN"],
+      Guangzhou: ["CNCAN"],
+      Huangpu: ["CNHUA"],
+      Lianhuashan: ["CNLIH"],
+      Nansha: ["CNNSA"],
+      Haikou: ["CNHAK"],
+      Huizhou: ["CNHUI"],
+      Jiangmen: ["CNJMN"],
+      Xinhui: ["CNXIN"],
+      Shantou: ["CNSWA"],
+      Shekou: ["CNSHK"],
+      ChiwAn: ["CNCWN"],
+      DachanBay: ["CNDJB"],
+      Yantian: ["CNYTI"],
+      Shunde: ["CNSUD"],
+      Beijiao: ["CNYQS"],
+      Leliu: ["CNLUU"],
+      Rongqi: ["CNROQ"],
+      Zhanjiang: ["CNZHA"],
+      Zhongshan: ["CNZSN"],
+      Xiaolan: ["CNXIL"],
+      Zhuhai: ["CNZUH"],
+      Gaolan: ["CNGON"],
+      Pusan: ["KRPUS"],
+      HongKong: ["HKHKG"],
+      Taiwan: ["TWTW"],
+      "Hsin Chu": ["TWHSL"],
+      Kaohsiung: ["TWKHH"],
+      Keelung: ["TWKEL"],
+      Taichung: ["TWTXG"],
+      Taipei: ["TWTPE"],
+      Taoyuan: ["TWTYU"],
+      Myanmar: ["MMMM"],
+      Yangon: ["MMRGN"],
+      Cambodia: ["KHKH"],
+      PhnomPenh: ["KHPNH"],
+      Sihanoukville: ["KHKOS"],
+      Philippines: ["PHPH"],
+      CagayandeOro: ["PHCGY"],
+      Cebu: ["PHCEB"],
+      Davao: ["PHDVO"],
+      GeneralSantos: ["PHGES"],
+      Manila: ["PHMNL"],
+      ManilaNorthPort: ["PHMNLN"],
+      ManilaSouthPort: ["PHMNLS"],
+      Subic: ["PHSFS"],
+      Malaysia: ["MYMY"],
+      PasirGudang: ["MYPGU"],
+      JohoreBahru: ["MYJHB"],
+      Penang: ["MYPEN,
+      Penang: ["MYPEN"],
+      PortKlang: ["MYPKG"],
+      KualaLumpur: ["MYKUL"],
+      Balikpapan: ["IDBPN"],
+      Banjarmasin: ["IDBDJ"],
+      Batam: ["IDBTM"],
+      Belawan: ["IDBLW"],
+      Jakarta: ["IDJKT"],
+      JambiSumatra: ["IDDJB"],
+      Makassar: ["IDMAK"],
+      Padang: ["IDPDG"],
+      Palembang: ["IDPLM"],
+      Panjang: ["IDPNJ"],
+      Pontianak: ["IDPNK"],
+      Samarinda: ["IDSRI"],
+      Semarang: ["IDSRG"],
+      Surabaya: ["IDSUB"],
+      Thailand: ["THTH"],
+      Bangkok: ["THBKK"],
+      LaemChabang: ["THLCH"],
+      LatKrabang: ["THLKR"],
+      Songkhla: ["THSGZ"],
+      Singapore: ["SGSIN"],
+      Vietnam: ["VNVN"],
+      CaiLan: ["VNCLN"],
+      DaNang: ["VNDAD"],
+      Haiphong: ["VNHPH"],
+      Hanoi: ["VNHAN"],
+      HoChiMinh: ["VNSGN"],
+      CaiMep: ["VNCMP"],
+      Quinhon: ["VNUIH"],
+      Macau: ["MOMO", "MOMFM"],
+      Chittagong: ["BDCGP"],
+      Dhaka: ["BDDAC"],
+      Mongla: ["BDMGL"],
+      Colombo: ["LKCMB"],
+      Karachi: ["PKKHI"],
+      Faisalabad: ["PKLYP"],
+      Multan: ["PKMUX"],
+      Peshawar: ["PKPEW"],
+      Sialkot: ["PKSKT"],
+      Lahore: ["PKLHE"],
+      Islamabad: ["PKISB"],
+      MuhammadBinQasim: ["PKBQM"],
+      Manama: ["BHAMH"],
+      Bahrain: ["BHBAH"],
+      Jeddah: ["SAJED"],
+      Jubayl: ["SAJUB"],
+      Riyadh: ["SARUH"],
+      Dammam: ["SADMM"],
+      AbuDhabi: ["AEAUH"],
+      Khorfakkan: ["AEKLF"],
+      UmmAlQuawain: ["AEQIW"],
+      RasAlKhaimah: ["AERKT"],
+      Sharjah: ["AESHJ"],
+      Dubai: ["AEDXB"],
+      PortRashid: ["AEPRA"],
+      Ajman: ["AEAJM"],
+      Fujairah: ["AEFJR"],
+      JebelAli: ["AEJEA"],
+      Mundra: ["INMUN"],
+      Pipavav: ["INPAV"],
+      NhavaSheva: ["INNSA"],
+      Tughlakabad: ["INTKD"],
+      NewDelhi: ["INICD"],
+      Dadri: ["INDRI"],
+      Faridabad: ["INFBD"],
+      Jaipur: ["INJAI"],
+      Jodhpur: ["INMNV"],
+      Kanpur: ["INKNU"],
+      Moradabad: ["INMOR"],
+      Patparganj: ["INPPG"],
+      Ludhiana: ["INLUH"],
+      Patli: ["INPTL"],
+      Gurgaon: ["INGGN"],
+      Loni: ["INLON"],
+      Kathuwas: ["INCML"],
+      Piyala: ["INPYL"],
+      Nagpur: ["INNAG"],
+      Indore: ["INIRE"],
+      Pune: ["INPNQ"],
+      Talegaon: ["INTGD"],
+      Ahmedabad: ["INAMD"],
+      Akleshwar: ["INAKV"],
+      Baroda: ["INBDQ"],
+      Sanand: ["INSAA"],
+      Madras: ["INMAA"],
+      Kattupalli: ["INKTP"],
+      Vizag: ["INVTZ"],
+      Tuticorin: ["INTUT"],
+      Calcutta: ["INCCU"],
+      Bangalore: ["INBGL"],
+      Hyderabad: ["INNHY"]
+    };
 
     const searchInput = document.getElementById("searchInput");
     const suggestionsDiv = document.getElementById("suggestions");
@@ -358,7 +346,7 @@
     function searchPorts() {
       const input = searchInput.value.trim();
       resultDiv.innerHTML = "";
-      suggestionsDiv.innerHTML = "";
+      suggestionsDiv.classList.remove("show");
 
       if (!input) {
         resultDiv.innerHTML = '<p style="color: orange;">Please enter a city name.</p>';
@@ -391,14 +379,40 @@
       const query = searchInput.value.toLowerCase();
       suggestionsDiv.innerHTML = "";
 
-      if (!query) return;
+      if (!query) {
+        suggestionsDiv.classList.remove("show");
+        return;
+      }
 
       const matches = Object.keys(portData).filter(city =>
         city.toLowerCase().startsWith(query)
       );
 
+      if (matches.length > 0) {
+        suggestionsDiv.classList.add("show");
+      } else {
+        suggestionsDiv.classList.remove("show");
+      }
+
       matches.forEach(city => {
         const div = document.createElement("div");
         div.className = "suggestion-item";
         div.textContent = city;
-        </script>
+        div.onclick = () => {
+          searchInput.value = city;
+          suggestionsDiv.classList.remove("show");
+          searchPorts();
+        };
+        suggestionsDiv.appendChild(div);
+      });
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!document.querySelector(".search-container").contains(e.target)) {
+        suggestionsDiv.classList.remove("show");
+      }
+    });
+  </script>
+</body>
+</html>
