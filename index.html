@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Port Code </title>
+    <title>Port Code Finder</title>
     <style>
       body {
         margin: 0;
@@ -91,13 +91,13 @@
   </head>
   <body>
     <div class="overlay">
-      <h1>🌸Port Code</h1>
+      <h1>🌸Port Code Finder</h1>
 
       <div class="search-container">
         <input
           type="text"
           id="searchInput"
-          placeholder="Enter a country or region..."
+          placeholder="Enter a country or city..."
         />
         <button onclick="searchPorts()">Search</button>
 
@@ -106,65 +106,72 @@
     </div>
 
     <script>
-      const portData = {
-        Japan: ["JPTYO", "JPYOK", "JPNGO", "JPOSA", "JPHKT", "JPPUS", "JPMOJ"],
-         China: ["CNYNT", "CNDAL", "CNSHA", "CNWUH", "CNTYU", "CNSZX" ],
-         Korea: ["KRINC", "KRUSN", "KRPUS"],
-        HongKong: ["HKHKG"],
-        Taiwan: ["TWTPE", "TWHUN"],
-        Myanmar: ["MMRGN"],
-        Cambodia: ["KHKOS"],
-        Philippines: ["PHMNL", "PHSBU"],
-        Malaysia: ["MYPKG", "MYKUL"],
-        Indonesia: ["IDJKT", "IDSUB"],
-        Thailand: ["THLCH", "THTHP"],
-        Singapore: ["SGSIN"],
-        Vietnam: ["VNHCH", "VNSGN"],
-        Macau: ["MOMFM"],
-        Bangladesh: ["BDCGP"],
-        "Sri Lanka": ["LKCMB"],
-        Pakistan: ["PKKHI", "PKKPT"],
-        Bahrain: ["BHBHR"],
-        "Saudi Arabia": ["SADMM", "SAJED"],
-        UAE: ["AEDXB", "AEAUH"],
-        " India": ["INDEL", "INLUH"],
-        " India": ["INMUM", "INNSR"],
-        " India": ["INCCU", "INKOL"],
-        " India": ["INMAA", "INTIR"],
-        " India": ["INGRJ", "INDLH"],
-        " India": ["INMBI", "INGOI"],
-      };
+      const apiKey = "YOUR_API_KEY_HERE"; // Replace with your Zyla API key
 
-      function searchPorts() {
+      // Trigger search on Enter key
+      document
+        .getElementById("searchInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            searchPorts();
+          }
+        });
+
+      async function searchPorts() {
         const input = document.getElementById("searchInput").value.trim();
         const resultDiv = document.getElementById("result");
         resultDiv.innerHTML = "";
 
         if (!input) {
           resultDiv.innerHTML =
-            '<p style="color: orange;">Please enter a country or region name.</p>';
+            '<p style="color: orange;">Please enter a country or city name.</p>';
           return;
         }
 
-        const normalized = input.toLowerCase();
-        let found = false;
+        // Try city search first
+        const cityUrl = `https://zylalabs.com/api/1767/seaports+information+api/1400/seaports+information+by+city?city=${encodeURIComponent(
+          input
+        )}`;
 
-        for (let key in portData) {
-          if (key.toLowerCase() === normalized) {
-            resultDiv.innerHTML = `<p>Port Codes for <strong>${key}</strong>:</p>`;
-            portData[key].forEach((code) => {
-              const span = document.createElement("span");
-              span.className = "code";
-              span.textContent = code;
-              resultDiv.appendChild(span);
+        const countryUrl = `https://zylalabs.com/api/1767/seaports+information+api/1401/seaports+information+by+country?country=${encodeURIComponent(
+          input
+        )}`;
+
+        try {
+          let res = await fetch(cityUrl, {
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+            },
+          });
+
+          let data = await res.json();
+
+          // If city returns no results, try country
+          if (!data || !data.length) {
+            res = await fetch(countryUrl, {
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+              },
             });
-            found = true;
-            break;
+            data = await res.json();
           }
-        }
 
-        if (!found) {
-          resultDiv.innerHTML = `<p style="color: red;">No port codes found for "${input}".</p>`;
+          if (!data || data.length === 0) {
+            resultDiv.innerHTML = `<p style="color: red;">No port codes found for "${input}".</p>`;
+            return;
+          }
+
+          resultDiv.innerHTML = `<p>Port Codes for <strong>${input}</strong>:</p>`;
+          data.forEach((port) => {
+            const span = document.createElement("span");
+            span.className = "code";
+            span.textContent = port.unlocode || port.name;
+            resultDiv.appendChild(span);
+          });
+        } catch (error) {
+          console.error(error);
+          resultDiv.innerHTML =
+            '<p style="color: red;">Something went wrong. Please try again later.</p>';
         }
       }
     </script>
