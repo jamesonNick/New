@@ -1,417 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Port Code</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      color: #ffffff;
-      background: url("") no-repeat center center fixed;
-      background-size: cover;
-      backdrop-filter: blur(3px);
-    }
-
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.7);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding: 2rem;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      color: #ff77ff;
-      text-shadow: 0 0 10px #ff77ff, 0 0 20px #ff77ff;
-      margin-bottom: 1rem;
-    }
-
-    .search-container {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-      width: 90%;
-      max-width: 600px;
-      text-align: center;
-      position: relative;
-    }
-
-    input {
-      padding: 0.7rem;
-      width: 70%;
-      border-radius: 6px;
-      border: none;
-      font-size: 1rem;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
-
-    input::placeholder {
-      color: #ccc;
-    }
-
-    button {
-      padding: 0.7rem 1.5rem;
-      background: #ff77ff;
-      color: black;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      margin-left: 0.5rem;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #ff44ff;
-    }
-
-    .result {
-      margin-top: 1.5rem;
-    }
-
-    .code {
-      display: inline-block;
-      background: #1e1e2f;
-      padding: 0.5rem 1rem;
-      margin: 0.25rem;
-      border-radius: 5px;
-      border: 1px solid #ff77ff;
-      color: #ff77ff;
-      font-weight: bold;
-      font-size: 0.95rem;
-    }
-
-    .suggestions {
-      position: absolute;
-      left: 15%;
-      right: 15%;
-      background-color: #1e1e2f;
-      border-radius: 6px;
-      margin-top: 5px;
-      max-height: 180px;
-      overflow-y: auto;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-      opacity: 0;
-      transform: translateY(5px);
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .suggestions.show {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .suggestion-item {
-      padding: 0.6rem 1rem;
-      cursor: pointer;
-      color: #ff77ff;
-      border-bottom: 1px solid #333;
-      transition: background 0.2s;
-    }
-
-    .suggestion-item:hover {
-      background-color: #333;
-    }
-  </style>
-</head>
-<body>
-  <div class="overlay">
-    <h1>🌸 Port Code</h1>
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Enter a city name..." autocomplete="off"/>
-      <button onclick="searchPorts()">Search</button>
-      <div class="suggestions" id="suggestions"></div>
-      <div class="result" id="result"></div>
-    </div>
-  </div>
-
-  <script>
-    const portData = {
-      Tokyo: ["JPTYO"],
-      Yokohama: ["JPYOK"],
-      Nagoya: ["JPNGO"],
-      Osaka: ["JPOSA"],
-      Hakata: ["JPHKT"],
-      Akita: ["JPAXT"],
-      Chiba: ["JPCHB"],
-      Hachinohe: ["JPHHE"],
-      Hiroshima: ["JPHIJ"],
-      Hitachinaka: ["JPHIC"],
-      Hokkaido: ["JPHKD"],
-      Hososhima: ["JPHSM"],
-      Imbari: ["JPIMB"],
-      Iwakuni: ["JPIWK"],
-      Iyomishima: ["JPIYM"],
-      Kagoshima: ["JPKOJ"],
-      Kawasaki: ["JPKWS"],
-      Kobe: ["JPUKB"],
-      Kochi: ["JPKCZ"],
-      Kokura: ["JPKOK"],
-      Kushiro: ["JPKUH"],
-      Matsuyama: ["JPMYJ"],
-      Mizushima: ["JPMIZ"],
-      Moji: ["JPMOJ"],
-      Naha: ["JPNAH"],
-      Yokkaichi: ["JPYKK"],
-      Wakayama: ["JPWAK"],
-      Toyoma: ["JPTOY"],
-      ToyomaShinko: ["JPTOS"],
-      Tomakomai: ["JPTMK"],
-      Takamatsu: ["JPTAK"],
-      Shimonoseki: ["JPSHS"],
-      Shimizu: ["JPSMZ"],
-      Dalian: ["CNDLC"],
-      Lianyungang: ["CNLYG"],
-      Qingdao: ["CNTAO"],
-      Xingang: ["CNXGG"],
-      Changshu: ["CNCGU"],
-      Chongqing: ["CNCKG"],
-      Nanjing: ["CNNKG"],
-      Nantong: ["CNNTG"],
-      Ningbo: ["CNNGB"],
-      Shanghai: ["CNSHA"],
-      Wuhan: ["CNWUH"],
-      Yangzhou: ["CNYZH"],
-      Zhangjiagang: ["CNZJG"],
-      Yantai: ["CNYNT"],
-      Zhenjiang: ["CNZHE"],
-      Dongguan: ["CNDGG"],
-      Humen: ["CNHMN"],
-      Shatian: ["CNSIN"],
-      Taiping: ["CNTAP"],
-      Fangcheng: ["CNFAN"],
-      Foshan: ["CNFOS"],
-      Sanshan: ["CNSHG"],
-      Fujian: ["CNNND"],
-      Fuzhou: ["CNFOC"],
-      Xiamen: ["CNXMN"],
-      Guangzhou: ["CNCAN"],
-      Huangpu: ["CNHUA"],
-      Lianhuashan: ["CNLIH"],
-      Nansha: ["CNNSA"],
-      Haikou: ["CNHAK"],
-      Huizhou: ["CNHUI"],
-      Jiangmen: ["CNJMN"],
-      Xinhui: ["CNXIN"],
-      Shantou: ["CNSWA"],
-      Shekou: ["CNSHK"],
-      ChiwAn: ["CNCWN"],
-      DachanBay: ["CNDJB"],
-      Yantian: ["CNYTI"],
-      Shunde: ["CNSUD"],
-      Beijiao: ["CNYQS"],
-      Leliu: ["CNLUU"],
-      Rongqi: ["CNROQ"],
-      Zhanjiang: ["CNZHA"],
-      Zhongshan: ["CNZSN"],
-      Xiaolan: ["CNXIL"],
-      Zhuhai: ["CNZUH"],
-      Gaolan: ["CNGON"],
-      Pusan: ["KRPUS"],
-      HongKong: ["HKHKG"],
-      Taiwan: ["TWTW"],
-      "Hsin Chu": ["TWHSL"],
-      Kaohsiung: ["TWKHH"],
-      Keelung: ["TWKEL"],
-      Taichung: ["TWTXG"],
-      Taipei: ["TWTPE"],
-      Taoyuan: ["TWTYU"],
-      Myanmar: ["MMMM"],
-      Yangon: ["MMRGN"],
-      Cambodia: ["KHKH"],
-      PhnomPenh: ["KHPNH"],
-      Sihanoukville: ["KHKOS"],
-      Philippines: ["PHPH"],
-      CagayandeOro: ["PHCGY"],
-      Cebu: ["PHCEB"],
-      Davao: ["PHDVO"],
-      GeneralSantos: ["PHGES"],
-      Manila: ["PHMNL"],
-      ManilaNorthPort: ["PHMNLN"],
-      ManilaSouthPort: ["PHMNLS"],
-      Subic: ["PHSFS"],
-      Malaysia: ["MYMY"],
-      PasirGudang: ["MYPGU"],
-      JohoreBahru: ["MYJHB"],
-      Penang: ["MYPEN"],
-      PortKlang: ["MYPKG"],
-      KualaLumpur: ["MYKUL"],
-      Balikpapan: ["IDBPN"],
-      Banjarmasin: ["IDBDJ"],
-      Batam: ["IDBTM"],
-      Belawan: ["IDBLW"],
-      Jakarta: ["IDJKT"],
-      JambiSumatra: ["IDDJB"],
-      Makassar: ["IDMAK"],
-      Padang: ["IDPDG"],
-      Palembang: ["IDPLM"],
-      Panjang: ["IDPNJ"],
-      Pontianak: ["IDPNK"],
-      Samarinda: ["IDSRI"],
-      Semarang: ["IDSRG"],
-      Surabaya: ["IDSUB"],
-      Thailand: ["THTH"],
-      Bangkok: ["THBKK"],
-      LaemChabang: ["THLCH"],
-      LatKrabang: ["THLKR"],
-      Songkhla: ["THSGZ"],
-      Singapore: ["SGSIN"],
-      Vietnam: ["VNVN"],
-      CaiLan: ["VNCLN"],
-      DaNang: ["VNDAD"],
-      Haiphong: ["VNHPH"],
-      Hanoi: ["VNHAN"],
-      HoChiMinh: ["VNSGN"],
-      CaiMep: ["VNCMP"],
-      Quinhon: ["VNUIH"],
-      Macau: ["MOMO", "MOMFM"],
-      Chittagong: ["BDCGP"],
-      Dhaka: ["BDDAC"],
-      Mongla: ["BDMGL"],
-      Colombo: ["LKCMB"],
-      Karachi: ["PKKHI"],
-      Faisalabad: ["PKLYP"],
-      Multan: ["PKMUX"],
-      Peshawar: ["PKPEW"],
-      Sialkot: ["PKSKT"],
-      Lahore: ["PKLHE"],
-      Islamabad: ["PKISB"],
-      MuhammadBinQasim: ["PKBQM"],
-      Manama: ["BHAMH"],
-      Bahrain: ["BHBAH"],
-      Jeddah: ["SAJED"],
-      Jubayl: ["SAJUB"],
-      Riyadh: ["SARUH"],
-      Dammam: ["SADMM"],
-      AbuDhabi: ["AEAUH"],
-      Khorfakkan: ["AEKLF"],
-      UmmAlQuawain: ["AEQIW"],
-      RasAlKhaimah: ["AERKT"],
-      Sharjah: ["AESHJ"],
-      Dubai: ["AEDXB"],
-      PortRashid: ["AEPRA"],
-      Ajman: ["AEAJM"],
-      Fujairah: ["AEFJR"],
-      JebelAli: ["AEJEA"],
-      Mundra: ["INMUN"],
-      Pipavav: ["INPAV"],
-      NhavaSheva: ["INNSA"],
-      Tughlakabad: ["INTKD"],
-      NewDelhi: ["INICD"],
-      Dadri: ["INDRI"],
-      Faridabad: ["INFBD"],
-      Jaipur: ["INJAI"],
-      Jodhpur: ["INMNV"],
-      Kanpur: ["INKNU"],
-      Moradabad: ["INMOR"],
-      Patparganj: ["INPPG"],
-      Ludhiana: ["INLUH"],
-      Patli: ["INPTL"],
-      Gurgaon: ["INGGN"],
-      Loni: ["INLON"],
-      Kathuwas: ["INCML"],
-      Piyala: ["INPYL"],
-      Nagpur: ["INNAG"],
-      Indore: ["INIRE"],
-      Pune: ["INPNQ"],
-      Talegaon: ["INTGD"],
-      Ahmedabad: ["INAMD"],
-      Akleshwar: ["INAKV"],
-      Baroda: ["INBDQ"],
-      Sanand: ["INSAA"],
-      Madras: ["INMAA"],
-      Kattupalli: ["INKTP"],
-      Vizag: ["INVTZ"],
-      Tuticorin: ["INTUT"],
-      Calcutta: ["INCCU"],
-      Bangalore: ["INBGL"],
-      Hyderabad: ["INNHY"]
-    };
-
-    const searchInput = document.getElementById("searchInput");
-    const suggestionsDiv = document.getElementById("suggestions");
-    const resultDiv = document.getElementById("result");
-
-    function searchPorts() {
-      const input = searchInput.value.trim();
-      resultDiv.innerHTML = "";
-      suggestionsDiv.classList.remove("show");
-
-      if (!input) {
-        resultDiv.innerHTML = '<p style="color: orange;">Please enter a city name.</p>';
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Port Code Lookup</title>
+    <link rel="icon" type="image/png" href="image.png" />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: url("https://images.unsplash.com/photo-1608032077018-8396a53f7c04?auto=format&fit=crop&w=1920&q=80")
+          no-repeat center center fixed;
+        background-size: cover;
+        color: #e0e0e0;
       }
 
-      const normalized = input.toLowerCase();
-      let found = false;
+      .overlay {
+        background-color: rgba(0, 18, 34, 0.85);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 2rem;
+      }
 
-      for (let key in portData) {
-        if (key.toLowerCase() === normalized) {
-          resultDiv.innerHTML = `<p>Port Codes for <strong>${key}</strong>:</p>`;
-          portData[key].forEach(code => {
-            const span = document.createElement("span");
-            span.className = "code";
-            span.textContent = code;
-            resultDiv.appendChild(span);
-          });
-          found = true;
-          break;
+      /* Bounce Animation */
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
         }
       }
 
-      if (!found) {
-        resultDiv.innerHTML = `<p style="color: red;">No port codes found for "<strong>${input}</strong>".</p>`;
+      h1 {
+        font-size: 2.8rem;
+        color: #00aaff;
+        text-shadow: 0 0 10px #0077aa;
+        margin-bottom: 1.5rem;
+        font-weight: bold;
+        animation: bounce 2s ease-in-out infinite;
       }
-    }
 
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      suggestionsDiv.innerHTML = "";
+      .search-container {
+        background-color: #12232e;
+        padding: 2.5rem;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
+        width: 95%;
+        max-width: 600px;
+        text-align: center;
+        position: relative;
+      }
 
-      if (!query) {
+      input {
+        padding: 0.75rem;
+        width: 65%;
+        border-radius: 5px;
+        border: none;
+        font-size: 1rem;
+        background-color: #1e2a38;
+        color: #ffffff;
+        border: 1px solid #00aaff;
+      }
+
+      input::placeholder {
+        color: #9abfd6;
+      }
+
+      button {
+        padding: 0.75rem 1.5rem;
+        background-color: #00aaff;
+        color: #00334e;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        margin-left: 0.5rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #0077aa;
+      }
+
+      .result {
+        margin-top: 2rem;
+        color: #ffffff;
+      }
+
+      .code {
+        display: inline-block;
+        background-color: #1b3b4f;
+        color: #00ccff;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem;
+        border: 1px solid #00ccff;
+        border-radius: 4px;
+        font-weight: bold;
+        font-family: monospace;
+        font-size: 1rem;
+      }
+
+      .suggestions {
+        position: absolute;
+        left: 17%;
+        right: 17%;
+        background-color: #1e2f3a;
+        border-radius: 5px;
+        margin-top: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        box-shadow: 0 0 10px rgba(0, 170, 255, 0.3);
+        opacity: 0;
+        transform: translateY(5px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        z-index: 100;
+      }
+
+      .suggestions.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .suggestion-item {
+        padding: 0.7rem 1rem;
+        cursor: pointer;
+        color: #00ccff;
+        border-bottom: 1px solid #29404f;
+        transition: background 0.2s;
+      }
+
+      .suggestion-item:hover {
+        background-color: #294d5a;
+      }
+
+      @media (max-width: 600px) {
+        input {
+          width: 100%;
+          margin-bottom: 1rem;
+        }
+
+        button {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay">
+      <h1>📦 Port Code</h1>
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search by city..."
+          autocomplete="off"
+        />
+        <button onclick="searchPorts()">Search</button>
+        <div class="suggestions" id="suggestions"></div>
+        <div class="result" id="result"></div>
+
+        <br /><br />
+
+        <input
+          type="text"
+          id="codeInput"
+          placeholder="Search by port code..."
+          autocomplete="off"
+        />
+        <button onclick="searchCity()">Search</button>
+        <div class="result" id="codeResult"></div>
+      </div>
+    </div>
+
+    <script>
+      const portData = {
+        Tokyo: ["JPTYO"],
+        Yokohama: ["JPYOK"],
+        Nagoya: ["JPNGO"],
+        Osaka: ["JPOSA"],
+        Hakata: ["JPHKT"],
+        Akita: ["JPAXT"],
+        Chennai: ["INMAA"],
+        Mumbai: ["INBOM"],
+        Hyderabad: ["INNHY"],
+      };
+
+      const searchInput = document.getElementById("searchInput");
+      const codeInput = document.getElementById("codeInput");
+      const suggestionsDiv = document.getElementById("suggestions");
+      const resultDiv = document.getElementById("result");
+      const codeResultDiv = document.getElementById("codeResult");
+
+      function searchPorts() {
+        const input = searchInput.value.trim();
+        resultDiv.innerHTML = "";
         suggestionsDiv.classList.remove("show");
-        return;
+
+        if (!input) {
+          resultDiv.innerHTML =
+            '<p style="color: orange;">Please enter a city name.</p>';
+          return;
+        }
+
+        const normalized = input.toLowerCase();
+        let found = false;
+
+        for (let key in portData) {
+          if (key.toLowerCase() === normalized) {
+            resultDiv.innerHTML = `<p>Port Codes for <strong>${key}</strong>:</p>`;
+            portData[key].forEach((code) => {
+              const span = document.createElement("span");
+              span.className = "code";
+              span.textContent = code;
+              resultDiv.appendChild(span);
+            });
+            found = true;
+            break;
+          }
+        }
+
+        if (!found) {
+          resultDiv.innerHTML = `<p style="color: red;">No port codes found for "<strong>${input}</strong>".</p>`;
+        }
       }
 
-      const matches = Object.keys(portData).filter(city =>
-        city.toLowerCase().startsWith(query)
-      );
+      function searchCity() {
+        const input = codeInput.value.trim().toUpperCase();
+        codeResultDiv.innerHTML = "";
 
-      if (matches.length > 0) {
-        suggestionsDiv.classList.add("show");
-      } else {
-        suggestionsDiv.classList.remove("show");
+        if (!input) {
+          codeResultDiv.innerHTML =
+            '<p style="color: orange;">Please enter a port code.</p>';
+          return;
+        }
+
+        let foundCities = [];
+
+        for (let city in portData) {
+          const codes = portData[city];
+          if (codes.includes(input)) {
+            foundCities.push(city);
+          }
+        }
+
+        if (foundCities.length > 0) {
+          codeResultDiv.innerHTML = `<p>City/Cities for Port Code <strong>${input}</strong>:</p>`;
+          foundCities.forEach((city) => {
+            const span = document.createElement("span");
+            span.className = "code";
+            span.textContent = city;
+            codeResultDiv.appendChild(span);
+          });
+        } else {
+          codeResultDiv.innerHTML = `<p style="color: red;">No city found for port code "<strong>${input}</strong>".</p>`;
+        }
       }
 
-      matches.forEach(city => {
-        const div = document.createElement("div");
-        div.className = "suggestion-item";
-        div.textContent = city;
-        div.onclick = () => {
-          searchInput.value = city;
+      // Auto-suggestions
+      searchInput.addEventListener("input", () => {
+        const query = searchInput.value.toLowerCase();
+        suggestionsDiv.innerHTML = "";
+
+        if (!query) {
           suggestionsDiv.classList.remove("show");
-          searchPorts();
-        };
-        suggestionsDiv.appendChild(div);
-      });
-    });
+          return;
+        }
 
-    // Hide suggestions when clicking outside
-    document.addEventListener("click", (e) => {
-      if (!document.querySelector(".search-container").contains(e.target)) {
-        suggestionsDiv.classList.remove("show");
-      }
-    });
-  </script>
-</body>
+        const matches = Object.keys(portData).filter((city) =>
+          city.toLowerCase().startsWith(query)
+        );
+
+        if (matches.length > 0) {
+          suggestionsDiv.classList.add("show");
+        } else {
+          suggestionsDiv.classList.remove("show");
+        }
+
+        matches.forEach((city) => {
+          const div = document.createElement("div");
+          div.className = "suggestion-item";
+          div.textContent = city;
+          div.onclick = () => {
+            searchInput.value = city;
+            suggestionsDiv.classList.remove("show");
+            searchPorts();
+          };
+          suggestionsDiv.appendChild(div);
+        });
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".search-container").contains(e.target)) {
+          suggestionsDiv.classList.remove("show");
+        }
+      });
+
+      // Keyboard support
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const isCodeInputFocused = document.activeElement === codeInput;
+          const isCityInputFocused = document.activeElement === searchInput;
+          if (isCodeInputFocused) {
+            searchCity();
+          } else if (isCityInputFocused) {
+            searchPorts();
+          }
+        }
+      });
+    </script>
+  </body>
 </html>
