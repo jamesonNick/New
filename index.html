@@ -6,27 +6,22 @@
     <title>Port Code Lookup</title>
     <link rel="icon" type="image/png" href="image.png" />
     <style>
-      /* Basic layout + styling */
       html, body {
         height: 100%;
         margin: 0;
         font-family: "Segoe UI", sans-serif;
-        background: #000; /* solid black fallback */
+        background: #000;
         color: #e0e0e0;
         overflow: hidden;
       }
-
-      /* Particles canvas container - sits behind content */
       #particles-js {
         position: fixed;
         inset: 0;
         width: 100%;
         height: 100%;
-        background-color: #000; /* pure black background */
-        z-index: -1; /* behind everything */
+        background-color: #000;
+        z-index: -1;
       }
-
-      /* Center content */
       .overlay {
         min-height: 100vh;
         display: flex;
@@ -34,15 +29,12 @@
         align-items: center;
         flex-direction: column;
         padding: 2rem;
-        /* subtle dark overlay to make content readable */
         background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25));
       }
-
       @keyframes bounce {
         0%,100% { transform: translateY(0); }
         50% { transform: translateY(-12px); }
       }
-
       h1 {
         font-size: 2.4rem;
         color: #00aaff;
@@ -54,7 +46,6 @@
         gap: 0.5rem;
         align-items: center;
       }
-
       .search-container {
         background-color: rgba(18,35,46,0.95);
         padding: 1.75rem;
@@ -66,7 +57,6 @@
         position: relative;
         z-index: 2;
       }
-
       .controls {
         display: flex;
         gap: 0.5rem;
@@ -74,7 +64,6 @@
         align-items: center;
         flex-wrap: wrap;
       }
-
       input[type="text"] {
         padding: 0.7rem 0.9rem;
         width: 68%;
@@ -86,9 +75,7 @@
         color: #ffffff;
         outline: none;
       }
-
       input::placeholder { color: #9abfd6; }
-
       button {
         padding: 0.72rem 1.1rem;
         background-color: #00aaff;
@@ -99,15 +86,12 @@
         cursor: pointer;
         transition: transform .12s ease, background .12s ease;
       }
-
       button:hover { transform: translateY(-2px); background-color: #0077aa; }
-
       .result {
         margin-top: 1.25rem;
         color: #fff;
         text-align: left;
       }
-
       .code {
         display: inline-block;
         background-color: #113444;
@@ -120,13 +104,11 @@
         font-family: monospace;
         font-size: 0.95rem;
       }
-
       p.hint {
         margin: 0;
         color: #9abfd6;
         font-size: 0.9rem;
       }
-
       @media (max-width: 600px) {
         input[type="text"] { width: 100%; }
         .controls { flex-direction: column; gap: 0.75rem; }
@@ -135,10 +117,8 @@
     </style>
   </head>
   <body>
-    <!-- particles container -->
     <div id="particles-js"></div>
 
-    <!-- UI overlay -->
     <div class="overlay">
       <h1>📦 Port Code Lookup</h1>
 
@@ -147,334 +127,58 @@
           <input id="searchInput" type="text" placeholder="Type a city (e.g. Tokyo) or a port code (e.g. JPTYO)" autocomplete="off" />
           <button id="searchBtn">Search</button>
         </div>
-
         <div class="result" id="result"></div>
-        <p class="hint" style="margin-top:12px">Tip: hover your cursor over the background to push particles away and see connecting lines.</p>
+        <p class="hint" style="margin-top:12px">Tip: hover over the background to see connecting lines (grab effect).</p>
       </div>
     </div>
 
     <script>
-      /* Full port data (kept from original input) */
       const portData = {
-       Tokyo: ["JPTYO"],
-Dongguan: ["CNDGG"],
-AbuDhabi: ["AEAUH"],
-Humen: ["CNHMN"],
-RasAlKhaimah: ["AERKT"],
-Shatian: ["CNSIN"],
-Sharjah: ["AESHJ"],
-Taiping: ["CNTAP"],
-JebelAli: ["AEJEA"],
-Fangcheng: ["CNFAN"],
-Ajman: ["AEAJM"],
-Foshan: ["CNFOC"],
-Chittagong: ["BDCGP"],
-Sanshan: ["CNSHG"],
-Dhaka: ["BDDAC"],
-Fuzhou: ["CNFOC"],
-Mongla: ["BDMGL"],
-Xiamen: ["CNXMN"],
-Tughlakabad: ["INTKD"],
-Guangzhou: ["CNCAN"],
-Dadri: ["INDRI"],
-Huangpu: ["CNLIJ"],
-Faridabad: ["INFBD"],
-Lianhuashan: ["CNLIH"],
-Jaipur: ["INJAI"],
-Nansha: ["CNNSA"],
-Jodhpur: ["INJCD"],
-Haikou: ["CNHAK"],
-Kanpur: ["INKAN"],
-Jiangmen: ["CNJMN"],
-Moradabad: ["INMOR"],
-Xinhui: ["CNXIN"],
-Ludhiana: ["INLUD"],
-Shantou: ["CNSWA"],
-Patli: ["INGGN"],
-Shenzhen: ["CNSHK"],
-Shekou: ["CNSHK"],
-Kathuwas: ["INCML"],
-DachanBay: ["CNDCB"],
-Piyala: ["INPYL"],
-Madras: ["INMAA"],
-Chennai: ["INMAA"],
-Yantian: ["CNYTN"],
-Kattupalli: ["INKTP"],
-Shunde: ["CNSUD"],
-Vizag: ["INVTZ"],
-Visakhapatnam: ["INVTZ"],
-Beijiao: ["CNYQS"],
-Tuticorin: ["INTUT"],
-Leliu: ["CNLUU"],
-Kolkota: ["INCCU"],
-Calcutta: ["INCCU"],
-Rongqi: ["CNROQ"],
-Mangalore: ["INIXE"],
-Zhanjiang: ["CNZHA"],
-Cochin: ["INCOK"],
-Zhongshan: ["CNZSN"],
-Colombo: ["LKCMB"],
-Xiaolan: ["CNXIL"],
-Karachi: ["PKKHI"],
-Zhuhai: ["CNZUH"],
-Muhammad : ["PKBQM"],
-BinQasim: ["PKBQM"],
-Gaolan: ["CNGON"],
-Bahrain: ["BHBAH"],
-Pusan: ["KRPUS"],
-Hyderabad: ["INHYD"],
-CatLai: ["VNCLI"],
-Ahmedabad: ["INAMD"],
-DaNang: ["VNDAD"],
-Baroda: ["INVAM"],
-Haiphong: ["VNHPH"],
-Sanand: ["INSAA"],
-HoChiMinh: ["VNSGN"],
-Jeddah: ["SAJED"],
-CaiMep: ["VNCMP"],
-Jubail: ["SAJUB"],
-Quinhon: ["VNUIH"],
-Riyadh: ["SARUH"],
-Macau: ["MOMFM"],
-Dammam: ["SADMM"],
-Vladivostok: ["RUVVO"],
-HongKong: ["HKHKG"],
-Kaohsiung: ["TWKHH"],
-Keelung: ["TWKEL"],
-Taichung: ["TWTXG"],
-Taipei: ["TWTPE"],
-Taoyuan: ["TWTYN"],
-Changshu: ["CNCGU"],
-Chongqing: ["CNCKG"],
-Nanjing: ["CNNKG"],
-Nantong: ["CNNTG"],
-Ningbo: ["CNNGB"],
-Shanghai: ["CNSHA"],
-Wuhan: ["CNWUH"],
-Zhangjiagang: ["CNZJG"],
-Yantai: ["CNYNT"],
-Zhenjiang: ["CNZHE"],
-Akita: ["JPAXT"],
-Chiba: ["JPCHB"],
-Hachinohe: ["JPHHE"],
-Hakata: ["JPHKT"],
-Hiroshima: ["JPHIJ"],
-Hitachinaka: ["JPHIC"],
-Hososhima: ["JPHSM"],
-Imbari: ["JPIMB"],
-Iwakuni: ["JPIWK"],
-Iyomishima: ["JPIYM"],
-Kawasaki: ["JPKWS"],
-Kobe: ["JPUKB"],
-Kochi: ["JPKCZ"],
-Kushiro: ["JPKUH"],
-Matsuyama: ["JPMYJ"],
-Mizushima: ["JPMIZ"],
-Moji: ["JPMOJ"],
-Nagoya: ["JPNGO"],
-Naha: ["JPNAH"],
-Nakanoseki: ["JPNAN"],
-Niigata: ["JPKIJ"],
-Oita: ["JPOIT"],
-Omaezaki: ["JPOMZ"],
-Osaka: ["JPOSA"],
-Sakaiminato: ["JPSMN"],
-Sendai: ["JPSDJ"],
-Shibushi: ["JPSBS"],
-Shimizu: ["JPSMZ"],
-Shimonoseki: ["JPSHS"],
-Takamatsu: ["JPTAK"],
-Tomakomai: ["JPTMK"],
-ToyamaShinko: ["JPTOS"],
-Toyama: ["JPTOS"],
-Yokkaichi: ["JPYKK"],
-Yokohama: ["JPYOK"],
-PasirGudang : ["MYPGU"],
-JohoreBahru: ["MYPGU"],
-Penang: ["MYPEN"],
-PortKlang: ["MYPKG"],
-KualaLumpur: ["MYPKG"],
-PhnomPenh: ["KHPNH"],
-Sihanoukville: ["KHKOS"],
-Yangon: ["MMRGN"],
-CagayanDeOro: ["PHCGY"],
-Cebu: ["PHCEB"],
-Davao: ["PHDVO"],
-GeneralSantos: ["PHGES"],
-Manila: ["PHMNL"],
-Subic: ["PHSFS"],
-Bangkok: ["THBKK"],
-LaemChabang: ["THLCH"],
-LatKrabang: ["THLKR"],
-Songkhla: ["THSGZ"],
-Balikpapan: ["IDBPN"],
-Batam: ["IDBTM"],
-Belawan: ["IDBLW"],
-Medan: ["IDBLW"],
-Jakarta: ["IDJKT"],
-Makassar: ["IDMAK"],
-Padang: ["IDPDG"],
-Palembang: ["IDPLM"],
-Panjang: ["IDPNJ"],
-Pontianak: ["IDPNK"],
-Semarang: ["IDSRG"],
-Surabaya: ["IDSUB"],
-Singapore: ["SGSIN"]
+        Tokyo:["JPTYO"],Dongguan:["CNDGG"],AbuDhabi:["AEAUH"],Humen:["CNHMN"],RasAlKhaimah:["AERKT"],Shatian:["CNSIN"],Sharjah:["AESHJ"],Taiping:["CNTAP"],JebelAli:["AEJEA"],Fangcheng:["CNFAN"],Ajman:["AEAJM"],Foshan:["CNFOC"],Chittagong:["BDCGP"],Sanshan:["CNSHG"],Dhaka:["BDDAC"],Fuzhou:["CNFOC"],Mongla:["BDMGL"],Xiamen:["CNXMN"],Tughlakabad:["INTKD"],Guangzhou:["CNCAN"],Dadri:["INDRI"],Huangpu:["CNLIJ"],Faridabad:["INFBD"],Lianhuashan:["CNLIH"],Jaipur:["INJAI"],Nansha:["CNNSA"],Jodhpur:["INJCD"],Haikou:["CNHAK"],Kanpur:["INKAN"],Jiangmen:["CNJMN"],Moradabad:["INMOR"],Xinhui:["CNXIN"],Ludhiana:["INLUD"],Shantou:["CNSWA"],Patli:["INGGN"],Shenzhen:["CNSHK"],Shekou:["CNSHK"],Kathuwas:["INCML"],DachanBay:["CNDCB"],Piyala:["INPYL"],Madras:["INMAA"],Chennai:["INMAA"],Yantian:["CNYTN"],Kattupalli:["INKTP"],Shunde:["CNSUD"],Vizag:["INVTZ"],Visakhapatnam:["INVTZ"],Beijiao:["CNYQS"],Tuticorin:["INTUT"],Leliu:["CNLUU"],Kolkota:["INCCU"],Calcutta:["INCCU"],Rongqi:["CNROQ"],Mangalore:["INIXE"],Zhanjiang:["CNZHA"],Cochin:["INCOK"],Zhongshan:["CNZSN"],Colombo:["LKCMB"],Xiaolan:["CNXIL"],Karachi:["PKKHI"],Zhuhai:["CNZUH"],Muhammad:["PKBQM"],BinQasim:["PKBQM"],Gaolan:["CNGON"],Bahrain:["BHBAH"],Pusan:["KRPUS"],Hyderabad:["INHYD"],CatLai:["VNCLI"],Ahmedabad:["INAMD"],DaNang:["VNDAD"],Baroda:["INVAM"],Haiphong:["VNHPH"],Sanand:["INSAA"],HoChiMinh:["VNSGN"],Jeddah:["SAJED"],CaiMep:["VNCMP"],Jubail:["SAJUB"],Quinhon:["VNUIH"],Riyadh:["SARUH"],Macau:["MOMFM"],Dammam:["SADMM"],Vladivostok:["RUVVO"],HongKong:["HKHKG"],Kaohsiung:["TWKHH"],Keelung:["TWKEL"],Taichung:["TWTXG"],Taipei:["TWTPE"],Taoyuan:["TWTYN"],Changshu:["CNCGU"],Chongqing:["CNCKG"],Nanjing:["CNNKG"],Nantong:["CNNTG"],Ningbo:["CNNGB"],Shanghai:["CNSHA"],Wuhan:["CNWUH"],Zhangjiagang:["CNZJG"],Yantai:["CNYNT"],Zhenjiang:["CNZHE"],Akita:["JPAXT"],Chiba:["JPCHB"],Hachinohe:["JPHHE"],Hakata:["JPHKT"],Hiroshima:["JPHIJ"],Hitachinaka:["JPHIC"],Hososhima:["JPHSM"],Imbari:["JPIMB"],Iwakuni:["JPIWK"],Iyomishima:["JPIYM"],Kawasaki:["JPKWS"],Kobe:["JPUKB"],Kochi:["JPKCZ"],Kushiro:["JPKUH"],Matsuyama:["JPMYJ"],Mizushima:["JPMIZ"],Moji:["JPMOJ"],Nagoya:["JPNGO"],Naha:["JPNAH"],Nakanoseki:["JPNAN"],Niigata:["JPKIJ"],Oita:["JPOIT"],Omaezaki:["JPOMZ"],Osaka:["JPOSA"],Sakaiminato:["JPSMN"],Sendai:["JPSDJ"],Shibushi:["JPSBS"],Shimizu:["JPSMZ"],Shimonoseki:["JPSHS"],Takamatsu:["JPTAK"],Tomakomai:["JPTMK"],ToyamaShinko:["JPTOS"],Toyama:["JPTOS"],Yokkaichi:["JPYKK"],Yokohama:["JPYOK"],PasirGudang:["MYPGU"],JohoreBahru:["MYPGU"],Penang:["MYPEN"],PortKlang:["MYPKG"],KualaLumpur:["MYPKG"],PhnomPenh:["KHPNH"],Sihanoukville:["KHKOS"],Yangon:["MMRGN"],CagayanDeOro:["PHCGY"],Cebu:["PHCEB"],Davao:["PHDVO"],GeneralSantos:["PHGES"],Manila:["PHMNL"],Subic:["PHSFS"],Bangkok:["THBKK"],LaemChabang:["THLCH"],LatKrabang:["THLKR"],Songkhla:["THSGZ"],Balikpapan:["IDBPN"],Batam:["IDBTM"],Belawan:["IDBLW"],Medan:["IDBLW"],Jakarta:["IDJKT"],Makassar:["IDMAK"],Padang:["IDPDG"],Palembang:["IDPLM"],Panjang:["IDPNJ"],Pontianak:["IDPNK"],Semarang:["IDSRG"],Surabaya:["IDSUB"],Singapore:["SGSIN"]
       };
-
-      const searchInput = document.getElementById("searchInput");
-      const searchBtn = document.getElementById("searchBtn");
-      const resultDiv = document.getElementById("result");
-
-      function clearResult() { resultDiv.innerHTML = ""; }
-
-      function renderCodesForCity(city) {
-        resultDiv.innerHTML = `<p>Port Codes for <strong>${city}</strong>:</p>`;
-        portData[city].forEach(code => {
-          const span = document.createElement("span");
-          span.className = "code";
-          span.textContent = code;
-          resultDiv.appendChild(span);
-        });
-      }
-
-      function renderCitiesForCode(code, cities) {
-        resultDiv.innerHTML = `<p>City/Cities for Port Code <strong>${code}</strong>:</p>`;
-        cities.forEach(city => {
-          const span = document.createElement("span");
-          span.className = "code";
-          span.textContent = city;
-          resultDiv.appendChild(span);
-        });
-      }
-
-      function search() {
-        const raw = searchInput.value.trim();
-        clearResult();
-
-        if (!raw) {
-          resultDiv.innerHTML = '<p style="color: orange;">Please enter a city name or a port code.</p>';
-          return;
-        }
-
-        // Try city match (case-insensitive exact)
-        const normalized = raw.toLowerCase();
-        for (let city in portData) {
-          if (city.toLowerCase() === normalized) {
-            renderCodesForCity(city);
-            return;
-          }
-        }
-
-        // Try exact port code match (case-insensitive)
-        const code = raw.toUpperCase();
-        const matchedCities = [];
-        for (let city in portData) {
-          if (portData[city].includes(code)) matchedCities.push(city);
-        }
-
-        if (matchedCities.length > 0) {
-          renderCitiesForCode(code, matchedCities);
-          return;
-        }
-
-        // If not exact, try fuzzy startsWith for city
-        const fuzzy = Object.keys(portData).filter(c => c.toLowerCase().startsWith(normalized));
-        if (fuzzy.length === 1) {
-          renderCodesForCity(fuzzy[0]);
-          return;
-        } else if (fuzzy.length > 1) {
-          resultDiv.innerHTML = `<p>Multiple cities match "<strong>${raw}</strong>":</p>`;
-          fuzzy.forEach(c => {
-            const span = document.createElement("span");
-            span.className = "code";
-            span.textContent = c;
-            resultDiv.appendChild(span);
-          });
-          return;
-        }
-
-        // nothing found
-        resultDiv.innerHTML = `<p style="color: red;">No results found for "<strong>${raw}</strong>".</p>`;
-      }
-
-      // Hook up events
-      searchBtn.addEventListener("click", search);
-      searchInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") search();
-      });
+      const searchInput=document.getElementById("searchInput");
+      const searchBtn=document.getElementById("searchBtn");
+      const resultDiv=document.getElementById("result");
+      function clearResult(){resultDiv.innerHTML="";}
+      function renderCodesForCity(city){resultDiv.innerHTML=`<p>Port Codes for <strong>${city}</strong>:</p>`;portData[city].forEach(code=>{const span=document.createElement("span");span.className="code";span.textContent=code;resultDiv.appendChild(span);});}
+      function renderCitiesForCode(code,cities){resultDiv.innerHTML=`<p>City/Cities for Port Code <strong>${code}</strong>:</p>`;cities.forEach(city=>{const span=document.createElement("span");span.className="code";span.textContent=city;resultDiv.appendChild(span);});}
+      function search(){const raw=searchInput.value.trim();clearResult();if(!raw){resultDiv.innerHTML='<p style="color: orange;">Please enter a city name or a port code.</p>';return;}
+        const normalized=raw.toLowerCase();for(let city in portData){if(city.toLowerCase()===normalized){renderCodesForCity(city);return;}}
+        const code=raw.toUpperCase();const matchedCities=[];for(let city in portData){if(portData[city].includes(code))matchedCities.push(city);}
+        if(matchedCities.length>0){renderCitiesForCode(code,matchedCities);return;}
+        const fuzzy=Object.keys(portData).filter(c=>c.toLowerCase().startsWith(normalized));
+        if(fuzzy.length===1){renderCodesForCity(fuzzy[0]);return;}else if(fuzzy.length>1){resultDiv.innerHTML=`<p>Multiple cities match "<strong>${raw}</strong>":</p>`;fuzzy.forEach(c=>{const span=document.createElement("span");span.className="code";span.textContent=c;resultDiv.appendChild(span);});return;}
+        resultDiv.innerHTML=`<p style="color: red;">No results found for "<strong>${raw}</strong>".</p>`;}
+      searchBtn.addEventListener("click",search);
+      searchInput.addEventListener("keydown",e=>{if(e.key==="Enter")search();});
     </script>
 
-    <!-- particles.js library -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-
     <script>
-      /*
-        Connecting dots + interactive cursor behavior.
-        onhover: ["grab", "repulse"] — shows connecting line to cursor (grab)
-        and pushes particles away (repulse) so they "move around" when you move the cursor.
-      */
-      particlesJS("particles-js", {
-        "particles": {
-          "number": {
-            "value": 140,
-            "density": { "enable": true, "value_area": 900 }
+      particlesJS("particles-js",{
+        "particles":{
+          "number":{"value":120,"density":{"enable":true,"value_area":800}},
+          "color":{"value":"#ffffff"},
+          "shape":{"type":"circle","stroke":{"width":0,"color":"#000000"}},
+          "opacity":{"value":0.6,"random":false},
+          "size":{"value":3,"random":true},
+          "line_linked":{"enable":true,"distance":140,"color":"#ffffff","opacity":0.25,"width":1},
+          "move":{"enable":true,"speed":2,"direction":"none","random":true,"straight":false,"out_mode":"out"}
+        },
+        "interactivity":{
+          "detect_on":"canvas",
+          "events":{
+            "onhover":{"enable":true,"mode":"grab"}, 
+            "onclick":{"enable":true,"mode":"push"},
+            "resize":true
           },
-          "color": { "value": "#ffffff" },
-          "shape": {
-            "type": "circle",
-            "stroke": { "width": 0, "color": "#000000" }
-          },
-          "opacity": {
-            "value": 0.6,
-            "random": false,
-            "anim": { "enable": false }
-          },
-          "size": {
-            "value": 3,
-            "random": true,
-            "anim": { "enable": false }
-          },
-          "line_linked": {
-            "enable": true,
-            "distance": 140,
-            "color": "#ffffff",
-            "opacity": 0.25,
-            "width": 1
-          },
-          "move": {
-            "enable": true,
-            "speed": 2.2,
-            "direction": "none",
-            "random": true,
-            "straight": false,
-            "out_mode": "out",
-            "bounce": false,
-            "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
+          "modes":{
+            "grab":{"distance":180,"line_linked":{"opacity":0.9}},
+            "repulse":{"distance":150,"duration":0.6},
+            "push":{"particles_nb":4}
           }
         },
-        "interactivity": {
-          "detect_on": "canvas",
-          "events": {
-            "onhover": {
-              "enable": true,
-              "mode": ["grab","repulse"] /* both draw line to cursor and push particles away */
-            },
-            "onclick": {
-              "enable": true,
-              "mode": "push" /* click to add particles */
-            },
-            "resize": true
-          },
-          "modes": {
-            "grab": { "distance": 180, "line_linked": { "opacity": 0.9 } },
-            "bubble": { "distance": 400, "size": 8, "duration": 2, "opacity": 0.8, "speed": 3 },
-            "repulse": { "distance": 140, "duration": 0.6 },
-            "push": { "particles_nb": 4 },
-            "remove": { "particles_nb": 2 }
-          }
-        },
-        "retina_detect": true
+        "retina_detect":true
       });
     </script>
   </body>
